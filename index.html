@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journey</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+            transition: background 2s ease;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to bottom, #7EC850, #228B22);
+            transition: background 2s ease;
+        }
+        
+        #character {
+            position: absolute;
+            bottom: 30%;
+            left: 50px;
+            width: 50px;
+            height: 50px;
+            background: #FF6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: transform 0.1s ease;
+        }
+        
+        #character::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 25px 0 0 white;
+        }
+        
+        #character::after {
+            content: '';
+            position: absolute;
+            bottom: 12px;
+            left: 15px;
+            width: 20px;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+        }
+        
+        #sun-moon {
+            position: absolute;
+            top: 50px;
+            right: 100px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #FFD700;
+            box-shadow: 0 0 40px #FFD700, 0 0 80px #FFA500;
+            transition: all 2s ease;
+        }
+        
+        #sun-moon::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
+            animation: pulse 3s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        #stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+        
+        #clouds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 2s ease;
+        }
+        
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.9;
+            animation: floatCloud 20s linear infinite;
+        }
+        
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        @keyframes floatCloud {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+        
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+        
+        .shooting-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, white, transparent);
+            border-radius: 50%;
+            animation: shoot 3s linear infinite;
+            opacity: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            100% { transform: translateX(-200px) translateY(200px); opacity: 0; }
+        }
+        
+        #message-box {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px 30px;
+            border-radius: 15px;
+            max-width: 80%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: all 0.5s ease;
+        }
+        
+        #message-text {
+            font-size: 1.2em;
+            color: #333;
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        #timer {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1em;
+            color: #333;
+        }
+        
+        /* Night mode styles */
+        body.night {
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+        }
+        
+        body.night #ground {
+            background: linear-gradient(to bottom, #1a472a, #0d2818);
+        }
+        
+        body.night #sun-moon {
+            background: #f5f5f5;
+            box-shadow: 0 0 30px #f5f5f5, 0 0 60px rgba(255,255,255,0.3);
+        }
+        
+        body.night #sun-moon::before {
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        }
+        
+        body.night #stars {
+            opacity: 1;
+        }
+        
+        body.night #clouds {
+            opacity: 0;
+        }
+        
+        body.night .shooting-star {
+            opacity: 1;
+        }
+        
+        body.night #message-box {
+            background: rgba(30, 30, 50, 0.9);
+        }
+        
+        body.night #message-text {
+            color: #fff;
+        }
+        
+        body.night #timer {
+            background: rgba(30, 30, 50, 0.8);
+            color: #fff;
+        }
+        
+        @media (max-width: 480px) {
+            #message-box {
+                padding: 15px 20px;
+                max-width: 90%;
+            }
+            #message-text {
+                font-size: 1em;
+            }
+            #character {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="stars"></div>
+        <div id="clouds"></div>
+        <div id="sun-moon"></div>
+        <div id="message-box">
+            <p id="message-text">Starting my journey...</p>
+        </div>
+        <div id="character"></div>
+        <div id="ground"></div>
+        <div id="timer">Day 1</div>
+    </div>
+
+    <script>
+        // === CONFIGURATION ===
+        // Customize these messages to tell your story
+        const messages = [
+            { time: 0, text: "When I first saw you, something changed..." },
+            { time: 3, text: "Every day I think about you more and more" },
+            { time: 6, text: "Your smile makes my day brighter" },
+            { time: 9, text: "I find myself looking forward to seeing you" },
+            { time: 12, text: "Every moment with you feels special" },
+            { time: 15, text: "You've become a part of my thoughts" },
+            { time: 18, text: "I appreciate everything about you" },
+            { time: 21, text: "My feelings grow stronger each day" },
+            { time: 24, text: "You're always on my mind, in the best way" },
+            { time: 27, text: "Every little thing reminds me of you" },
+            { time: 30, text: "I'm grateful for every moment we share" },
+            { time: 33, text: "You've made my life so much better" },
+            { time: 36, text: "I can't imagine my days without you now" },
+            { time: 39, text: "Every sunrise makes me think of you" },
+            { time: 42, text: "You're the best part of my day" },
+            { time: 45, text: "My heart smiles when I think of you" },
+            { time: 48, text: "You've changed my world in the best way" },
+            { time: 51, text: "Every sunset reminds me of your beauty" },
+            { time: 54, text: "I fall for you more with each passing day" },
+            { time: 57, text: "You're my favorite thought, always" },
+            { time: 60, text: "This journey with you means everything to me 💕" }
+        ];
+
+        // Game settings
+        const characterSpeed = 2; // Speed of character movement
+        const dayLength = 10000; // Day length in milliseconds (10 seconds per day/night cycle)
+        
+        // === GAME VARIABLES ===
+        let gameTime = 0; // Total game time in seconds
+        let characterX = 50;
+        let isNight = false;
+        let lastMessageIndex = -1;
+        
+        // === DOM ELEMENTS ===
+        const character = document.getElementById('character');
+        const sunMoon = document.getElementById('sun-moon');
+        const starsContainer = document.getElementById('stars');
+        const cloudsContainer = document.getElementById('clouds');
+        const messageText = document.getElementById('message-text');
+        const timerDisplay = document.getElementById('timer');
+        const body = document.body;
+        
+        // === CREATE STARS ===
+        function createStars() {
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+            
+            // Add shooting stars
+            for (let i = 0; i < 3; i++) {
+                const shootingStar = document.createElement('div');
+                shootingStar.className = 'shooting-star';
+                shootingStar.style.left = (50 + Math.random() * 40) + '%';
+                shootingStar.style.top = (10 + Math.random() * 30) + '%';
+                shootingStar.style.animationDelay = (i * 5 + Math.random() * 3) + 's';
+                starsContainer.appendChild(shootingStar);
+            }
+        }
+        
+        // === CREATE CLOUDS ===
+        function createClouds() {
+            const cloudConfigs = [
+                { width: 100, height: 40, top: 80, duration: 25, delay: 0 },
+                { width: 150, height: 50, top: 120, duration: 30, delay: 5 },
+                { width: 80, height: 30, top: 60, duration: 20, delay: 10 },
+                { width: 120, height: 45, top: 150, duration: 35, delay: 15 },
+            ];
+            
+            cloudConfigs.forEach(config => {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                cloud.style.width = config.width + 'px';
+                cloud.style.height = config.height + 'px';
+                cloud.style.top = config.top + 'px';
+                cloud.style.animationDuration = config.duration + 's';
+                cloud.style.animationDelay = config.delay + 's';
+                
+                // Add cloud puffs
+                const puff1 = document.createElement('div');
+                puff1.style.cssText = `
+                    position: absolute;
+                    width: ${config.width * 0.5}px;
+                    height: ${config.height * 1.2}px;
+                    background: white;
+                    border-radius: 50%;
+                    top: -${config.height * 0.4}px;
+                    left: ${config.width * 0.2}px;
+                `;
+                
+                const puff2 = document.createElement('div');
+                puff2.style.cssText = `
+                    position: absolute;
+                    width: ${config.width * 0.4}px;
+                    height: ${config.height * 1}px;
+                    background: white;
+                    border-radius: 50%;
+                    top: -${config.height * 0.3}px;
+                    right: ${config.width * 0.2}px;
+                `;
+                
+                cloud.appendChild(puff1);
+                cloud.appendChild(puff2);
+                cloudsContainer.appendChild(cloud);
+            });
+        }
+        
+        // === GAME LOOP ===
+        function gameLoop() {
+            // Update game time
+            gameTime += 0.016; // Approximately 60 FPS
+            
+            // Move character
+            characterX += characterSpeed;
+            if (characterX > window.innerWidth + 50) {
+                characterX = -50;
+            }
+            character.style.left = characterX + 'px';
+            
+            // Day/night cycle
+            const cyclePosition = (gameTime * 1000) % (dayLength * 2);
+            const isNightNow = cyclePosition > dayLength;
+            
+            if (isNightNow !== isNight) {
+                isNight = isNightNow;
+                body.classList.toggle('night', isNight);
+                
+                // Move sun/moon
+                if (isNight) {
+                    sunMoon.style.top = '100px';
+                    sunMoon.style.right = '50px';
+                } else {
+                    sunMoon.style.top = '50px';
+                    sunMoon.style.right = '100px';
+                }
+            }
+            
+            // Update messages
+            updateMessages();
+            
+            // Update timer display
+            const days = Math.floor(gameTime / 10);
+            timerDisplay.textContent = `Day ${days + 1}`;
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // === MESSAGE SYSTEM ===
+        function updateMessages() {
+            for (let i = messages.length - 1; i >= 0; i--) {
+                if (gameTime >= messages[i].time && i > lastMessageIndex) {
+                    showMessage(messages[i].text);
+                    lastMessageIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        function showMessage(text) {
+            messageText.style.opacity = 0;
+            setTimeout(() => {
+                messageText.textContent = text;
+                messageText.style.opacity = 1;
+            }, 500);
+        }
+        
+        // === INITIALIZE ===
+        createStars();
+        createClouds();
+        gameLoop();
+    </script>
+</body>
+</html>
