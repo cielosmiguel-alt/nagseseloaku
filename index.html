@@ -3,625 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Journey</title>
+    <title>Sprite Sheet Animation</title>
     <style>
-        * { box-sizing: border-box; }
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             margin: 0;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
-            transition: background 2s ease;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
         }
-        
-        #game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
+
+        h1 {
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        
-        #ground {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 30%;
-            background: linear-gradient(to bottom, #7EC850, #228B22);
-            transition: background 2s ease;
-        }
-        
-        #trees {
-            position: absolute;
-            bottom: 30%;
-            left: 0;
-            width: 100%;
-            height: 40%;
-            pointer-events: none;
-        }
-        
-        .tree {
-            position: absolute;
-            bottom: 0;
-        }
-        
-        .tree-trunk {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #8B4513;
-            border-radius: 2px;
-        }
-        
-        .tree-leaves {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #228B22;
-            border-radius: 50%;
-        }
-        
-        #birds {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60%;
-            pointer-events: none;
-        }
-        
-        .bird {
-            position: absolute;
-            animation: flyBird 15s linear infinite;
-        }
-        
-        .bird-body {
-            position: relative;
-            width: 20px;
-            height: 8px;
-            background: #333;
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-        }
-        
-        .bird-wing {
-            position: absolute;
-            width: 15px;
-            height: 4px;
-            background: #333;
-            border-radius: 50%;
-            top: -3px;
-            animation: flapWings 0.3s ease-in-out infinite alternate;
-        }
-        
-        .bird-wing.left {
-            left: -8px;
-            transform-origin: right center;
-        }
-        
-        .bird-wing.right {
-            right: -8px;
-            transform-origin: left center;
-        }
-        
-        @keyframes flapWings {
-            0% { transform: rotate(-30deg); }
-            100% { transform: rotate(30deg); }
-        }
-        
-        @keyframes flyBird {
-            0% { transform: translateX(-50px) translateY(0); }
-            25% { transform: translateX(25vw) translateY(-20px); }
-            50% { transform: translateX(50vw) translateY(10px); }
-            75% { transform: translateX(75vw) translateY(-15px); }
-            100% { transform: translateX(110vw) translateY(0); }
-        }
-        
-        #character {
-            position: absolute;
-            bottom: 30%;
-            left: 50px;
-            width: 50px;
-            height: 50px;
-            background: #FF6B6B;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transition: transform 0.1s ease;
-        }
-        
-        #character::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 25px 0 0 white;
-        }
-        
-        #character::after {
-            content: '';
-            position: absolute;
-            bottom: 12px;
-            left: 15px;
-            width: 20px;
-            height: 4px;
-            background: white;
-            border-radius: 2px;
-        }
-        
-        #sun-moon {
-            position: absolute;
-            top: 50px;
-            right: 100px;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #FFD700;
-            box-shadow: 0 0 40px #FFD700, 0 0 80px #FFA500;
-            transition: all 2s ease;
-        }
-        
-        #sun-moon::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
-            animation: pulse 3s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-        
-        #stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 70%;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 2s ease;
-        }
-        
-        #clouds {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            pointer-events: none;
-            opacity: 1;
-            transition: opacity 2s ease;
-        }
-        
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 50px;
-            opacity: 0.9;
-            animation: floatCloud 20s linear infinite;
-        }
-        
-        .cloud::before, .cloud::after {
-            content: '';
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-        }
-        
-        @keyframes floatCloud {
-            0% { transform: translateX(-200px); }
-            100% { transform: translateX(calc(100vw + 200px)); }
-        }
-        
-        .star {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite;
-        }
-        
-        .shooting-star {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: linear-gradient(45deg, white, transparent);
-            border-radius: 50%;
-            animation: shoot 3s linear infinite;
-            opacity: 0;
-        }
-        
-        @keyframes twinkle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        
-        @keyframes shoot {
-            0% { transform: translateX(0) translateY(0); opacity: 1; }
-            100% { transform: translateX(-200px) translateY(200px); opacity: 0; }
-        }
-        
-        #message-box {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px 30px;
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
             border-radius: 15px;
-            max-width: 80%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 100;
-            transition: all 0.5s ease;
         }
-        
-        #message-text {
-            font-size: 1.2em;
-            color: #333;
-            margin: 0;
-            line-height: 1.6;
+
+        /* Sprite Sheet Animation Method */
+        .sprite-container {
+            width: 64px;
+            height: 64px;
+            margin: 20px auto;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
         }
-        
-        #timer {
+
+        .sprite {
+            width: 100%;
+            height: 100%;
+            /* This simulates a sprite sheet - in real use, you'd use background-image */
+            background: linear-gradient(90deg, 
+                #ff6b6b 0%, #ff6b6b 25%, 
+                #feca57 25%, #feca57 50%, 
+                #48dbfb 50%, #48dbfb 75%, 
+                #ff9ff3 75%, #ff9ff3 100%);
+            background-size: 400% 100%;
+            animation: spritePlay 0.8s steps(4) infinite;
+        }
+
+        @keyframes spritePlay {
+            from { background-position: 0% 0; }
+            to { background-position: 100% 0; }
+        }
+
+        /* Alternative: Multiple Image Method */
+        .image-frame-animation {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .frame {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 1em;
-            color: #333;
-        }
-        
-        /* Night mode styles */
-        body.night {
-            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
-        }
-        
-        body.night #ground {
-            background: linear-gradient(to bottom, #1a472a, #0d2818);
-        }
-        
-        body.night #sun-moon {
-            background: #f5f5f5;
-            box-shadow: 0 0 30px #f5f5f5, 0 0 60px rgba(255,255,255,0.3);
-        }
-        
-        body.night #sun-moon::before {
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-        }
-        
-        body.night #stars {
-            opacity: 1;
-        }
-        
-        body.night #clouds {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
             opacity: 0;
+            animation: frameCycle 2s infinite;
         }
-        
-        body.night .shooting-star {
-            opacity: 1;
+
+        .frame:nth-child(1) {
+            background: #ff6b6b;
+            animation-delay: 0s;
         }
-        
-        body.night #message-box {
-            background: rgba(30, 30, 50, 0.9);
+        .frame:nth-child(2) {
+            background: #feca57;
+            animation-delay: 0.5s;
         }
-        
-        body.night #message-text {
-            color: #fff;
+        .frame:nth-child(3) {
+            background: #48dbfb;
+            animation-delay: 1s;
         }
-        
-        body.night #timer {
-            background: rgba(30, 30, 50, 0.8);
-            color: #fff;
+        .frame:nth-child(4) {
+            background: #ff9ff3;
+            animation-delay: 1.5s;
         }
-        
-        body.night .tree-leaves {
-            background: #1a472a;
+
+        @keyframes frameCycle {
+            0%, 20% { opacity: 1; transform: scale(1); }
+            25%, 100% { opacity: 0; transform: scale(0.8); }
         }
-        
-        body.night .tree-trunk {
-            background: #5d3a1a;
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
-        
-        body.night .bird-body {
-            background: #1a1a1a;
+
+        button {
+            padding: 12px 24px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        
-        body.night .bird-wing {
-            background: #1a1a1a;
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
-        
-        body.night .bird {
-            opacity: 0.5;
+
+        .info {
+            max-width: 500px;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
         }
-        
-        @media (max-width: 480px) {
-            #message-box {
-                padding: 15px 20px;
-                max-width: 90%;
-            }
-            #message-text {
-                font-size: 1em;
-            }
-            #character {
-                width: 40px;
-                height: 40px;
-            }
+
+        .info h3 {
+            margin-top: 0;
+            color: #48dbfb;
+        }
+
+        .info code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .speed-indicator {
+            margin: 10px 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .paused .sprite,
+        .paused .frame {
+            animation-play-state: paused;
         }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="stars"></div>
-        <div id="clouds"></div>
-        <div id="sun-moon"></div>
-        <div id="birds"></div>
-        <div id="trees"></div>
-        <div id="message-box">
-            <p id="message-text"></p>
+    <h1>Frame-by-Frame Animation Tutorial</h1>
+    
+    <div class="container">
+        <h3>Sprite Sheet Method</h3>
+        <div class="sprite-container">
+            <div class="sprite"></div>
         </div>
-        <div id="character"></div>
-        <div id="ground"></div>
-        <div id="timer">Day 1</div>
+        <p>Simulates a 4-frame sprite sheet animation</p>
+
+        <h3>Multiple Image Method</h3>
+        <div class="image-frame-animation">
+            <div class="frame"></div>
+            <div class="frame"></div>
+            <div class="frame"></div>
+            <div class="frame"></div>
+        </div>
+        <p>Cycles through 4 different colored frames</p>
+
+        <div class="speed-indicator">Current Speed: <span id="speedDisplay">1x</span></div>
+
+        <div class="controls">
+            <button onclick="toggleAnimation()">⏯️ Pause/Play</button>
+            <button onclick="changeSpeed()">⚡ Change Speed</button>
+        </div>
+
+        <div class="info">
+            <h3>How to Use Your Own Drawings:</h3>
+            <p><strong>Method 1: Sprite Sheet</strong></p>
+            <ul>
+                <li>Combine all frames into one horizontal image</li>
+                <li>Use <code>background-image</code> with your sprite sheet</li>
+                <li>Animate <code>background-position</code> with <code>steps()</code></li>
+            </ul>
+            
+            <p><strong>Method 2: Separate Images</strong></p>
+            <ul>
+                <li>Save each frame as frame1.png, frame2.png, etc.</li>
+                <li>Use multiple <code>&lt;img&gt;</code> or <code>&lt;div&gt;</code> elements</li>
+                <li>Animate opacity with staggered delays</li>
+            </ul>
+
+            <p><strong>For GitHub Pages:</strong></p>
+            <ul>
+                <li>Upload HTML and images to your GitHub repository</li>
+                <li>Enable GitHub Pages in repository settings</li>
+                <li>Your animation will be live on the web!</li>
+            </ul>
+        </div>
     </div>
 
     <script>
-        // === CONFIGURATION ===
-        // Customize these messages to tell your story
-        const messages = [
-            { time: 0, text: "" },
-            { time: 3, text: "" },
-            { time: 6, text: "" },
-            { time: 9, text: "" },
-            { time: 12, text: "" },
-            { time: 15, text: "" },
-            { time: 18, text: "" },
-            { time: 21, text: "" },
-            { time: 24, text: "" },
-            { time: 27, text: "" },
-            { time: 30, text: "" },
-            { time: 33, text: "" },
-            { time: 36, text: "" },
-            { time: 39, text: "" },
-            { time: 42, text: "" },
-            { time: 45, text: "" },
-            { time: 48, text: "" },
-            { time: 51, text: "" },
-            { time: 54, text: "" },
-            { time: 57, text: "" },
-            { time: 60, text: "" }
-        ];
+        let isPaused = false;
+        let speeds = [0.5, 1, 2];
+        let currentSpeedIndex = 1;
 
-        // Game settings
-        const characterSpeed = 2; // Speed of character movement
-        const dayLength = 10000; // Day length in milliseconds (10 seconds per day/night cycle)
-        
-        // === GAME VARIABLES ===
-        let gameTime = 0; // Total game time in seconds
-        let characterX = 50;
-        let isNight = false;
-        let lastMessageIndex = -1;
-        
-        // === DOM ELEMENTS ===
-        const character = document.getElementById('character');
-        const sunMoon = document.getElementById('sun-moon');
-        const starsContainer = document.getElementById('stars');
-        const cloudsContainer = document.getElementById('clouds');
-        const treesContainer = document.getElementById('trees');
-        const birdsContainer = document.getElementById('birds');
-        const messageText = document.getElementById('message-text');
-        const timerDisplay = document.getElementById('timer');
-        const body = document.body;
-        
-        // === CREATE STARS ===
-        function createStars() {
-            for (let i = 0; i < 50; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                starsContainer.appendChild(star);
-            }
-            
-            // Add shooting stars
-            for (let i = 0; i < 3; i++) {
-                const shootingStar = document.createElement('div');
-                shootingStar.className = 'shooting-star';
-                shootingStar.style.left = (50 + Math.random() * 40) + '%';
-                shootingStar.style.top = (10 + Math.random() * 30) + '%';
-                shootingStar.style.animationDelay = (i * 5 + Math.random() * 3) + 's';
-                starsContainer.appendChild(shootingStar);
-            }
+        function toggleAnimation() {
+            isPaused = !isPaused;
+            document.body.classList.toggle('paused', isPaused);
         }
-        
-        // === CREATE CLOUDS ===
-        function createClouds() {
-            const cloudConfigs = [
-                { width: 100, height: 40, top: 80, duration: 25, delay: 0 },
-                { width: 150, height: 50, top: 120, duration: 30, delay: 5 },
-                { width: 80, height: 30, top: 60, duration: 20, delay: 10 },
-                { width: 120, height: 45, top: 150, duration: 35, delay: 15 },
-            ];
+
+        function changeSpeed() {
+            currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+            const speed = speeds[currentSpeedIndex];
             
-            cloudConfigs.forEach(config => {
-                const cloud = document.createElement('div');
-                cloud.className = 'cloud';
-                cloud.style.width = config.width + 'px';
-                cloud.style.height = config.height + 'px';
-                cloud.style.top = config.top + 'px';
-                cloud.style.animationDuration = config.duration + 's';
-                cloud.style.animationDelay = config.delay + 's';
-                
-                // Add cloud puffs
-                const puff1 = document.createElement('div');
-                puff1.style.cssText = `
-                    position: absolute;
-                    width: ${config.width * 0.5}px;
-                    height: ${config.height * 1.2}px;
-                    background: white;
-                    border-radius: 50%;
-                    top: -${config.height * 0.4}px;
-                    left: ${config.width * 0.2}px;
-                `;
-                
-                const puff2 = document.createElement('div');
-                puff2.style.cssText = `
-                    position: absolute;
-                    width: ${config.width * 0.4}px;
-                    height: ${config.height * 1}px;
-                    background: white;
-                    border-radius: 50%;
-                    top: -${config.height * 0.3}px;
-                    right: ${config.width * 0.2}px;
-                `;
-                
-                cloud.appendChild(puff1);
-                cloud.appendChild(puff2);
-                cloudsContainer.appendChild(cloud);
+            document.getElementById('speedDisplay').textContent = speed + 'x';
+            
+            const sprite = document.querySelector('.sprite');
+            const frames = document.querySelectorAll('.frame');
+            
+            // Adjust animation duration based on speed
+            const baseDuration = 0.8 / speed;
+            const frameDuration = 2 / speed;
+            
+            sprite.style.animationDuration = baseDuration + 's';
+            frames.forEach(frame => {
+                frame.style.animationDuration = frameDuration + 's';
             });
         }
-        
-        // === CREATE TREES ===
-        function createTrees() {
-            const treeConfigs = [
-                { x: 10, height: 80, trunkWidth: 8, leavesSize: 40 },
-                { x: 25, height: 60, trunkWidth: 6, leavesSize: 30 },
-                { x: 45, height: 100, trunkWidth: 10, leavesSize: 50 },
-                { x: 65, height: 70, trunkWidth: 7, leavesSize: 35 },
-                { x: 85, height: 90, trunkWidth: 9, leavesSize: 45 },
-            ];
-            
-            treeConfigs.forEach(config => {
-                const tree = document.createElement('div');
-                tree.className = 'tree';
-                tree.style.left = config.x + '%';
-                
-                const trunk = document.createElement('div');
-                trunk.className = 'tree-trunk';
-                trunk.style.width = config.trunkWidth + 'px';
-                trunk.style.height = config.height + 'px';
-                
-                const leaves = document.createElement('div');
-                leaves.className = 'tree-leaves';
-                leaves.style.width = config.leavesSize + 'px';
-                leaves.style.height = config.leavesSize + 'px';
-                
-                tree.appendChild(trunk);
-                tree.appendChild(leaves);
-                treesContainer.appendChild(tree);
-            });
-        }
-        
-        // === CREATE BIRDS ===
-        function createBirds() {
-            for (let i = 0; i < 5; i++) {
-                const bird = document.createElement('div');
-                bird.className = 'bird';
-                bird.style.top = (15 + Math.random() * 25) + '%';
-                bird.style.animationDelay = (i * 3 + Math.random() * 2) + 's';
-                bird.style.animationDuration = (12 + Math.random() * 8) + 's';
-                
-                const body = document.createElement('div');
-                body.className = 'bird-body';
-                
-                const leftWing = document.createElement('div');
-                leftWing.className = 'bird-wing left';
-                
-                const rightWing = document.createElement('div');
-                rightWing.className = 'bird-wing right';
-                
-                body.appendChild(leftWing);
-                body.appendChild(rightWing);
-                bird.appendChild(body);
-                birdsContainer.appendChild(bird);
-            }
-        }
-        
-        // === GAME LOOP ===
-        function gameLoop() {
-            // Update game time
-            gameTime += 0.016; // Approximately 60 FPS
-            
-            // Move character
-            characterX += characterSpeed;
-            if (characterX > window.innerWidth + 50) {
-                characterX = -50;
-            }
-            character.style.left = characterX + 'px';
-            
-            // Day/night cycle
-            const cyclePosition = (gameTime * 1000) % (dayLength * 2);
-            const isNightNow = cyclePosition > dayLength;
-            
-            if (isNightNow !== isNight) {
-                isNight = isNightNow;
-                body.classList.toggle('night', isNight);
-                
-                // Move sun/moon
-                if (isNight) {
-                    sunMoon.style.top = '100px';
-                    sunMoon.style.right = '50px';
-                } else {
-                    sunMoon.style.top = '50px';
-                    sunMoon.style.right = '100px';
-                }
-            }
-            
-            // Update messages
-            updateMessages();
-            
-            // Update timer display
-            const days = Math.floor(gameTime / 10);
-            timerDisplay.textContent = `Day ${days + 1}`;
-            
-            requestAnimationFrame(gameLoop);
-        }
-        
-        // === MESSAGE SYSTEM ===
-        function updateMessages() {
-            for (let i = messages.length - 1; i >= 0; i--) {
-                if (gameTime >= messages[i].time && i > lastMessageIndex) {
-                    if (messages[i].text.trim() !== '') {
-                        showMessage(messages[i].text);
-                    }
-                    lastMessageIndex = i;
-                    break;
-                }
-            }
-        }
-        
-        function showMessage(text) {
-            if (text.trim() === '') {
-                messageText.style.opacity = 0;
-                return;
-            }
-            messageText.style.opacity = 0;
-            setTimeout(() => {
-                messageText.textContent = text;
-                messageText.style.opacity = 1;
-            }, 500);
-        }
-        
-        // === INITIALIZE ===
-        createStars();
-        createClouds();
-        createTrees();
-        createBirds();
-        gameLoop();
     </script>
 </body>
 </html>
