@@ -30,6 +30,93 @@
             transition: background 2s ease;
         }
         
+        #trees {
+            position: absolute;
+            bottom: 30%;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            pointer-events: none;
+        }
+        
+        .tree {
+            position: absolute;
+            bottom: 0;
+        }
+        
+        .tree-trunk {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #8B4513;
+            border-radius: 2px;
+        }
+        
+        .tree-leaves {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #228B22;
+            border-radius: 50%;
+        }
+        
+        #birds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            pointer-events: none;
+        }
+        
+        .bird {
+            position: absolute;
+            animation: flyBird 15s linear infinite;
+        }
+        
+        .bird-body {
+            position: relative;
+            width: 20px;
+            height: 8px;
+            background: #333;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+        
+        .bird-wing {
+            position: absolute;
+            width: 15px;
+            height: 4px;
+            background: #333;
+            border-radius: 50%;
+            top: -3px;
+            animation: flapWings 0.3s ease-in-out infinite alternate;
+        }
+        
+        .bird-wing.left {
+            left: -8px;
+            transform-origin: right center;
+        }
+        
+        .bird-wing.right {
+            right: -8px;
+            transform-origin: left center;
+        }
+        
+        @keyframes flapWings {
+            0% { transform: rotate(-30deg); }
+            100% { transform: rotate(30deg); }
+        }
+        
+        @keyframes flyBird {
+            0% { transform: translateX(-50px) translateY(0); }
+            25% { transform: translateX(25vw) translateY(-20px); }
+            50% { transform: translateX(50vw) translateY(10px); }
+            75% { transform: translateX(75vw) translateY(-15px); }
+            100% { transform: translateX(110vw) translateY(0); }
+        }
+        
         #character {
             position: absolute;
             bottom: 30%;
@@ -241,6 +328,26 @@
             color: #fff;
         }
         
+        body.night .tree-leaves {
+            background: #1a472a;
+        }
+        
+        body.night .tree-trunk {
+            background: #5d3a1a;
+        }
+        
+        body.night .bird-body {
+            background: #1a1a1a;
+        }
+        
+        body.night .bird-wing {
+            background: #1a1a1a;
+        }
+        
+        body.night .bird {
+            opacity: 0.5;
+        }
+        
         @media (max-width: 480px) {
             #message-box {
                 padding: 15px 20px;
@@ -261,8 +368,10 @@
         <div id="stars"></div>
         <div id="clouds"></div>
         <div id="sun-moon"></div>
+        <div id="birds"></div>
+        <div id="trees"></div>
         <div id="message-box">
-            <p id="message-text">Starting my journey...</p>
+            <p id="message-text"></p>
         </div>
         <div id="character"></div>
         <div id="ground"></div>
@@ -273,27 +382,27 @@
         // === CONFIGURATION ===
         // Customize these messages to tell your story
         const messages = [
-            { time: 0, text: "When I first saw you, something changed..." },
-            { time: 3, text: "Every day I think about you more and more" },
-            { time: 6, text: "Your smile makes my day brighter" },
-            { time: 9, text: "I find myself looking forward to seeing you" },
-            { time: 12, text: "Every moment with you feels special" },
-            { time: 15, text: "You've become a part of my thoughts" },
-            { time: 18, text: "I appreciate everything about you" },
-            { time: 21, text: "My feelings grow stronger each day" },
-            { time: 24, text: "You're always on my mind, in the best way" },
-            { time: 27, text: "Every little thing reminds me of you" },
-            { time: 30, text: "I'm grateful for every moment we share" },
-            { time: 33, text: "You've made my life so much better" },
-            { time: 36, text: "I can't imagine my days without you now" },
-            { time: 39, text: "Every sunrise makes me think of you" },
-            { time: 42, text: "You're the best part of my day" },
-            { time: 45, text: "My heart smiles when I think of you" },
-            { time: 48, text: "You've changed my world in the best way" },
-            { time: 51, text: "Every sunset reminds me of your beauty" },
-            { time: 54, text: "I fall for you more with each passing day" },
-            { time: 57, text: "You're my favorite thought, always" },
-            { time: 60, text: "This journey with you means everything to me 💕" }
+            { time: 0, text: "" },
+            { time: 3, text: "" },
+            { time: 6, text: "" },
+            { time: 9, text: "" },
+            { time: 12, text: "" },
+            { time: 15, text: "" },
+            { time: 18, text: "" },
+            { time: 21, text: "" },
+            { time: 24, text: "" },
+            { time: 27, text: "" },
+            { time: 30, text: "" },
+            { time: 33, text: "" },
+            { time: 36, text: "" },
+            { time: 39, text: "" },
+            { time: 42, text: "" },
+            { time: 45, text: "" },
+            { time: 48, text: "" },
+            { time: 51, text: "" },
+            { time: 54, text: "" },
+            { time: 57, text: "" },
+            { time: 60, text: "" }
         ];
 
         // Game settings
@@ -311,6 +420,8 @@
         const sunMoon = document.getElementById('sun-moon');
         const starsContainer = document.getElementById('stars');
         const cloudsContainer = document.getElementById('clouds');
+        const treesContainer = document.getElementById('trees');
+        const birdsContainer = document.getElementById('birds');
         const messageText = document.getElementById('message-text');
         const timerDisplay = document.getElementById('timer');
         const body = document.body;
@@ -384,6 +495,62 @@
             });
         }
         
+        // === CREATE TREES ===
+        function createTrees() {
+            const treeConfigs = [
+                { x: 10, height: 80, trunkWidth: 8, leavesSize: 40 },
+                { x: 25, height: 60, trunkWidth: 6, leavesSize: 30 },
+                { x: 45, height: 100, trunkWidth: 10, leavesSize: 50 },
+                { x: 65, height: 70, trunkWidth: 7, leavesSize: 35 },
+                { x: 85, height: 90, trunkWidth: 9, leavesSize: 45 },
+            ];
+            
+            treeConfigs.forEach(config => {
+                const tree = document.createElement('div');
+                tree.className = 'tree';
+                tree.style.left = config.x + '%';
+                
+                const trunk = document.createElement('div');
+                trunk.className = 'tree-trunk';
+                trunk.style.width = config.trunkWidth + 'px';
+                trunk.style.height = config.height + 'px';
+                
+                const leaves = document.createElement('div');
+                leaves.className = 'tree-leaves';
+                leaves.style.width = config.leavesSize + 'px';
+                leaves.style.height = config.leavesSize + 'px';
+                
+                tree.appendChild(trunk);
+                tree.appendChild(leaves);
+                treesContainer.appendChild(tree);
+            });
+        }
+        
+        // === CREATE BIRDS ===
+        function createBirds() {
+            for (let i = 0; i < 5; i++) {
+                const bird = document.createElement('div');
+                bird.className = 'bird';
+                bird.style.top = (15 + Math.random() * 25) + '%';
+                bird.style.animationDelay = (i * 3 + Math.random() * 2) + 's';
+                bird.style.animationDuration = (12 + Math.random() * 8) + 's';
+                
+                const body = document.createElement('div');
+                body.className = 'bird-body';
+                
+                const leftWing = document.createElement('div');
+                leftWing.className = 'bird-wing left';
+                
+                const rightWing = document.createElement('div');
+                rightWing.className = 'bird-wing right';
+                
+                body.appendChild(leftWing);
+                body.appendChild(rightWing);
+                bird.appendChild(body);
+                birdsContainer.appendChild(bird);
+            }
+        }
+        
         // === GAME LOOP ===
         function gameLoop() {
             // Update game time
@@ -428,7 +595,9 @@
         function updateMessages() {
             for (let i = messages.length - 1; i >= 0; i--) {
                 if (gameTime >= messages[i].time && i > lastMessageIndex) {
-                    showMessage(messages[i].text);
+                    if (messages[i].text.trim() !== '') {
+                        showMessage(messages[i].text);
+                    }
                     lastMessageIndex = i;
                     break;
                 }
@@ -436,6 +605,10 @@
         }
         
         function showMessage(text) {
+            if (text.trim() === '') {
+                messageText.style.opacity = 0;
+                return;
+            }
             messageText.style.opacity = 0;
             setTimeout(() => {
                 messageText.textContent = text;
@@ -446,6 +619,8 @@
         // === INITIALIZE ===
         createStars();
         createClouds();
+        createTrees();
+        createBirds();
         gameLoop();
     </script>
 </body>
